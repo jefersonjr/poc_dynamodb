@@ -1,29 +1,36 @@
-﻿using Serilog;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TestesDynamoDB.Carga;
 using TestesDynamoDB.Entities;
+using TestesDynamoDB.Repositories;
+using TestesDynamoDB.Workers;
 
 namespace TestesDynamoDB
 {
     class Program
     {
-        async static Task Main(string[] args)
+        static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                             .WriteTo.Console()
                             .CreateLogger();
 
+            var host = CreateHostBuilder(args);
+            host.Start();
+
             // Parâmetros para carga
-            DateTime dataProcessamento = new DateTime(2022, 01, 01);
-            int totalRegistros = 10000000;
+            //DateTime dataProcessamento = new DateTime(2022, 01, 01);
+            //int totalRegistros = 10000000;
 
             // Efetuar carga (chave simples) com 1mi registros
             //await new CargaPessoaChaveUnica().Processar(dataProcessamento, totalRegistros);
 
             // Efetuar carga (chave dupla) com 1mi registros
-            await new CargaPessoaChaveDupla().Processar(dataProcessamento, totalRegistros);
+            //await new CargaPessoaChaveDupla().Processar(dataProcessamento, totalRegistros);
 
 
             // TESTES
@@ -42,6 +49,20 @@ namespace TestesDynamoDB
                 int random = new Random().Next(1, 5);
                 dicionario[random].Add("VALOR");
             }*/
+        }
+
+
+        private static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureServices(ConfigureServices);
+        }
+
+        private static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+        {
+            services.AddSingleton<IPessoaRepository, PessoaRepository>();
+            services.AddHostedService<ExportarRegistrosChaveDuplaWorker>();
+            //services.AddHostedService<ExportarRegistrosChaveSimplesWorker>();
         }
     }
 }

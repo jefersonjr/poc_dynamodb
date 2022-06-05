@@ -59,7 +59,7 @@ namespace TestesDynamoDB.Repositories
             }
         }
 
-        public AsyncSearch<T> CarregarRegistros<T>(string nomeChave, object valorChave)
+        public AsyncSearch<T> CarregarRegistros<T>(string nomeChave, string valorChave)
         {
             var filtro = new QueryFilter();
             filtro.AddCondition(nomeChave, QueryOperator.Equal, valorChave);
