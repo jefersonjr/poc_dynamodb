@@ -20,7 +20,7 @@ namespace TestesDynamoDB.Repositories
         {
             var config = new AmazonDynamoDBConfig()
             {
-                ServiceURL = "http://192.168.88.22:8000"
+                ServiceURL = "http://localhost:8000"
             };
 
             _client = new AmazonDynamoDBClient(config);

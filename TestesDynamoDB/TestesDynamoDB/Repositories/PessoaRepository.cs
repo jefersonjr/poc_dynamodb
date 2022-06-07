@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TestesDynamoDB.Entities;
 using TestesDynamoDB.Export;
@@ -47,6 +48,8 @@ namespace TestesDynamoDB.Repositories
                     var data = pessoaExport.Processar(listaRegistros);
                     streamWriter.Write(data);
                 }
+
+                _logger.LogDebug("Registros carregdos: {0} - Thread: {1}", totalRegistros, Thread.CurrentThread.ManagedThreadId);
             }
 
             _logger.LogInformation("Total de registros: {0:N0}", totalRegistros);
@@ -57,7 +60,7 @@ namespace TestesDynamoDB.Repositories
 
         public async Task<Stream> CarregarRegistrosChaveDuplaAsync(DateTime dataCadastro)
         {
-            int totalParticoes = 4;
+            int totalParticoes = 5;
             List<Task<Stream>> taskList = new List<Task<Stream>>();
 
             for(int i = 1; i <= totalParticoes; i++)
@@ -86,7 +89,7 @@ namespace TestesDynamoDB.Repositories
 
         public Task<Stream> CarregarRegistrosChaveSimplesAsync(DateTime dataCadastro)
         {
-            string dataFiltro = dataCadastro.ToString("yyyy-MM-dd");
+            string dataFiltro = dataCadastro.ToString("yyyyMMdd");
             return CarregarRegistros(dataFiltro);
         }
     }

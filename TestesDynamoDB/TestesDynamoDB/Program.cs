@@ -17,14 +17,17 @@ namespace TestesDynamoDB
         {
             Log.Logger = new LoggerConfiguration()
                             .WriteTo.Console()
+                            .MinimumLevel.Debug()
                             .CreateLogger();
 
             var host = CreateHostBuilder(args);
             host.Start();
 
+            while (true) ;
+
             // Parâmetros para carga
-            //DateTime dataProcessamento = new DateTime(2022, 01, 01);
-            //int totalRegistros = 10000000;
+           // DateTime dataProcessamento = new DateTime(2022, 01, 01);
+           // int totalRegistros = 10000000;
 
             // Efetuar carga (chave simples) com 1mi registros
             //await new CargaPessoaChaveUnica().Processar(dataProcessamento, totalRegistros);
@@ -55,12 +58,15 @@ namespace TestesDynamoDB
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureServices(ConfigureServices);
+                .ConfigureServices(ConfigureServices)
+                .UseSerilog();
         }
 
         private static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
             services.AddSingleton<IPessoaRepository, PessoaRepository>();
+            //services.AddHostedService<CargaDuplaWorker>();
+            //services.AddHostedService<CargaSimplesWorker>();
             services.AddHostedService<ExportarRegistrosChaveDuplaWorker>();
             //services.AddHostedService<ExportarRegistrosChaveSimplesWorker>();
         }

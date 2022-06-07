@@ -30,7 +30,7 @@ namespace TestesDynamoDB.Workers
 
             try
             {
-                DateTime dataFiltro = new DateTime(2022, 1, 1);
+                DateTime dataFiltro = new DateTime(2022, 9, 1);
                 var stream = await _repository.CarregarRegistrosChaveDuplaAsync(dataFiltro);
                 _logger.LogInformation("Extração concluida em {0}", stopwatch.Elapsed);
             }
